@@ -34,7 +34,7 @@ module datapath(
 	input wire memtoregE,
 	input wire alusrcE,regdstE,
 	input wire regwriteE,
-	input wire[2:0] alucontrolE,
+	input wire[4:0] alucontrolE,
 	output wire flushE,
 	//mem stage
 	input wire memtoregM,
@@ -110,7 +110,7 @@ module datapath(
 	//decode stage
 	flopenr #(32) r1D(clk,rst,~stallD,pcplus4F,pcplus4D);
 	flopenrc #(32) r2D(clk,rst,~stallD,flushD,instrF,instrD);
-	signext se(instrD[15:0],signimmD);
+	signext se(alusrcE,instrD[15:0],signimmD);
 	sl2 immsh(signimmD,signimmshD);
 	adder pcadd2(pcplus4D,signimmshD,pcbranchD);
 	mux2 #(32) forwardamux(srcaD,aluoutM,forwardaD,srca2D);
