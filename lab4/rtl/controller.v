@@ -25,6 +25,7 @@ module controller(
 	//decode stage
 	input wire[5:0] opD,functD,
 	output wire pcsrcD,branchD,equalD,jumpD,
+	output wire [1:0] hilo_weD,
 	
 	//execute stage
 	input wire flushE,
@@ -55,7 +56,8 @@ module controller(
 		branchD,alusrcD,
 		regdstD,regwriteD,
 		jumpD,
-		aluopD
+		aluopD,
+		hilo_weD
 		);
 	aludec ad(functD,aluopD,alucontrolD);
 

@@ -30,6 +30,7 @@ module datapath(
 	input wire jumpD,
 	output wire equalD,
 	output wire[5:0] opD,functD,
+	input wire[1:0] hilo_weD,
 	//execute stage
 	input wire memtoregE,
 	input wire alusrcE,regdstE,
@@ -57,6 +58,9 @@ module datapath(
 	wire flushD,stallD; 
 	wire [31:0] signimmD,signimmshD;
 	wire [31:0] srcaD,srca2D,srcbD,srcb2D;
+	//D阶段hilo相关
+	wire [31:0] hiD,loD;
+
 	//execute stage
 	wire [1:0] forwardaE,forwardbE;
 	wire [4:0] rsE,rtE,rdE;
@@ -64,11 +68,33 @@ module datapath(
 	wire [31:0] signimmE;
 	wire [31:0] srcaE,srca2E,srcbE,srcb2E,srcb3E;
 	wire [31:0] aluoutE;
+	
+	//E阶段hilo与乘除法相关信号
+	//写回的hilo值
+	wire [31:0] hi_alu_outE,lo_alu_outE;
+	wire [31:0] hi_div_outE,lo_div_outE;
+	//除法开始结束信号
+	wire ready_oE,start_iE;
+	wire div_signalE;
+	wire [31:0] hi_mux_outE,lo_mux_outE;
+	//hi-lo reg value propagate
+	wire [31:0] hiE,loE;
+	wire [31:0] hi2E,lo2E;
+	wire [1:0] hilo_weE;
+	wire [1:0] forwardhiloE;
+
 	//mem stage
 	wire [4:0] writeregM;
+	//M阶段hilo与乘除法相关信号
+	wire [31:0] hi_alu_outM,lo_alu_outM;
+	wire [1:0] hilo_weM;
+
 	//writeback stage
 	wire [4:0] writeregW;
 	wire [31:0] aluoutW,readdataW,resultW;
+	//w阶段hilo与乘除法相关信号
+	wire [31:0] hi_alu_outW,lo_alu_outW;
+	wire [1:0] hilo_weW;
 
 	//hazard detection
 	hazard h(
@@ -94,7 +120,9 @@ module datapath(
 		writeregW,
 		regwriteW
 		);
-
+	
+	//hilo寄存器
+	hilo_reg hilo(clk,rst,hilo_weW,hi_alu_outW,lo_alu_outW,hiD,loD);
 	//next PC logic (operates in fetch an decode)
 	mux2 #(32) pcbrmux(pcplus4F,pcbranchD,pcsrcD,pcnextbrFD);
 	mux2 #(32) pcmux(pcnextbrFD,
@@ -130,21 +158,43 @@ module datapath(
 	floprc #(5) r4E(clk,rst,flushE,rsD,rsE);
 	floprc #(5) r5E(clk,rst,flushE,rtD,rtE);
 	floprc #(5) r6E(clk,rst,flushE,rdD,rdE);
+	//hilo相关
+	floprc #(64)  r7E(clk,rst,flushE, {hiD,loD},{hiE,loE});
+	floprc #(2)   r8E(clk,rst,flushE,hilo_weD,hilo_weE);
 
 	mux3 #(32) forwardaemux(srcaE,resultW,aluoutM,forwardaE,srca2E);
 	mux3 #(32) forwardbemux(srcbE,resultW,aluoutM,forwardbE,srcb2E);
+
+	//hilo forward (MTHI->MFHI)
+	mux3 #(32) forwardhimux(hiE,hi_alu_outM,hi_alu_outW,forwardhiloE,hi2E);
+	mux3 #(32) forwardlomux(loE,lo_alu_outM,lo_alu_outW,forwardhiloE,lo2E);
+	
 	mux2 #(32) srcbmux(srcb2E,signimmE,alusrcE,srcb3E);
-	alu alu(srca2E,srcb3E,alucontrolE,aluoutE);
+	alu alu(.a(srca2E),.b(srcb3E),.op(alucontrolE),.hi_in(hi2E),.lo_in(lo2E),
+	.overflow(),.y(aluoutE),.hi_alu_out(hi_alu_outE),.lo_alu_out(lo_alu_outE),.zero());
 	mux2 #(5) wrmux(rtE,rdE,regdstE,writeregE);
+
+	//div
+	div div (clk,rst,div_signalE,srca2E,srcb3E,1'b0,start_iE,{hi_div_outE,lo_div_outE},ready_oE);
+	assign div_signalE = ((alucontrolE == 5'b11010)|(alucontrolE == 5'b11011))? 1 : 0;
+	//mux2 is judge the input of hilo_reg come from alu or divider_Primary
+	mux2 #(32) hi_div(hi_alu_outE,hi_div_outE,div_signalE,hi_mux_outE);
+	mux2 #(32) lo_div(lo_alu_outE,lo_div_outE,div_signalE,lo_mux_outE);
 
 	//mem stage
 	flopr #(32) r1M(clk,rst,srcb2E,writedataM);
 	flopr #(32) r2M(clk,rst,aluoutE,aluoutM);
 	flopr #(5) r3M(clk,rst,writeregE,writeregM);
+	//hilo
+	flopenrc #(64) r4M(clk,rst,~stallM,flushM,{hi_mux_outE,lo_mux_outE},{hi_alu_outM,lo_alu_outM});
+	flopenrc #(2)  r5M(clk,rst,~stallM,flushM,hilo_weE,hilo_weM);
 
 	//writeback stage
 	flopr #(32) r1W(clk,rst,aluoutM,aluoutW);
 	flopr #(32) r2W(clk,rst,readdataM,readdataW);
 	flopr #(5) r3W(clk,rst,writeregM,writeregW);
+	//hilo
+	floprc #(64) r5W(clk,rst,flushW,{hi_alu_outM,lo_alu_outM},{hi_alu_outW,lo_alu_outW});
+	floprc #(2)  r6W(clk,rst,flushW,hilo_weM,hilo_weW);
 	mux2 #(32) resmux(aluoutW,readdataW,memtoregW,resultW);
 endmodule

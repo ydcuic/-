@@ -40,7 +40,7 @@ module aludec(
 			4'b0110: alucontrol <= 5'b10100;//slti
 			4'b0111: alucontrol <= 5'b10101;//sltiu
 				
-			4'b1000 : case (funct)
+			4'b1000 : case (funct)//R_TYPE_OP
 				6'b100100:alucontrol <= 5'b00111; //and
 				6'b100101:alucontrol <= 5'b00001; //or
 				6'b100110:alucontrol <= 5'b00010;  //xor
@@ -54,6 +54,18 @@ module aludec(
 				
 				6'b101010:alucontrol <= 5'b10100; //slt
 				6'b101011:alucontrol <= 5'b10101; //sltu
+
+				//乘除
+				6'b011000:alucontrol <= 5'b11000; //MULT
+				6'b011001:alucontrol <= 5'b11001; //MULTU
+				6'b011010:alucontrol <= 5'b11010; //DIV
+				6'b011011:alucontrol <= 5'b11011; //DIVU
+
+				//数据移动指令
+				6'b010000:alucontrol <= 5'b11100; //MFHI
+				6'b010001:alucontrol <= 5'b11101; //MTHI
+				6'b010010:alucontrol <= 5'b11110; //MFLO
+				6'b010011:alucontrol <= 5'b11111; //MTLO
 			
 				default:  alucontrol <= 3'b00000;
 			endcase
