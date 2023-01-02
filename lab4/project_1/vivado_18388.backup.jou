@@ -1,0 +1,16 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:40:23 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Sun Dec 25 13:46:45 2022
+# Process ID: 18388
+# Current directory: C:/Users/86152/Desktop/colab/CO-lab-material-CQU/vivado/lab4/project_1
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent36268 C:\Users\86152\Desktop\colab\CO-lab-material-CQU\vivado\lab4\project_1\project_1.xpr
+# Log file: C:/Users/86152/Desktop/colab/CO-lab-material-CQU/vivado/lab4/project_1/vivado.log
+# Journal file: C:/Users/86152/Desktop/colab/CO-lab-material-CQU/vivado/lab4/project_1\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/86152/Desktop/colab/CO-lab-material-CQU/vivado/lab4/project_1/project_1.xpr
+update_compile_order -fileset sources_1
+add_files -norecurse {C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/datapath.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/hazard.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/eqcmp.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/flopenrc.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/mips.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/mux3.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/mux2.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/alu.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/controller.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/regfile.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/aludec.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/sl2.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/maindec.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/pc.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/flopr.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/floprc.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/signext.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/flopenr.v C:/Users/86152/Desktop/colab/step_into_mips/lab_4/rtl/adder.v}
+update_compile_order -fileset sources_1

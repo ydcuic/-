@@ -1,0 +1,33 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  --include "../../../../../rtl/myCPU/utils" \
+"../../../../../rtl/xilinx_ip/data_ram/sim/data_ram.v" \
+"../../../../../rtl/xilinx_ip/inst_ram/sim/inst_ram.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/adder.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/alu.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/aludec.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/controller.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/datapath.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/eqcmp.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/flopenr.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/flopenrc.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/flopr.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/floprc.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/hazard.v" \
+"../../../../../rtl/myCPU/utils/instdec.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/maindec.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/mips.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/mux2.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/mux3.v" \
+"../../../../../rtl/myCPU/mycpu_top.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/pc.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/regfile.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/signext.v" \
+"../../../../../../../../step_into_mips/lab_4/rtl/sl2.v" \
+"../../../../../rtl/top.v" \
+"../../../../../sim/mycpu_tb.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
